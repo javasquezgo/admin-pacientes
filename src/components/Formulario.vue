@@ -1,27 +1,60 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, defineEmits, defineProps } from "vue";
 import Alerta from "./Alerta.vue";
-
-const paciente = reactive({
-  nombre: "",
-  propietario: "",
-  email: "",
-  alta: "",
-  sintoma: "",
-});
 
 const alerta = reactive({
   tipo: "",
   mensaje: "",
 });
 
+const emit = defineEmits([
+  "update:nombre",
+  "update:propietario",
+  "update:email",
+  "update:alta",
+  "update:sintoma",
+  "guardar-paciente",
+]);
+
+const props = defineProps({
+  nombre: {
+    type: String,
+    required: true,
+  },
+  propietario: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  alta: {
+    type: String,
+    required: true,
+  },
+  sintoma: {
+    type: String,
+    required: true,
+  },
+});
+
 const validar = () => {
-  if (Object.values(paciente).includes("")) {
+  if (Object.values(props).includes("")) {
     alerta.mensaje = "Todos los campos deben ser llenados.";
     alerta.tipo = "error";
     return;
   } else {
     alerta.mensaje = "Guardado correctamente.";
+    alerta.tipo = "save";
+    emit("guardar-paciente");
+
+    setTimeout(() => {
+      Object.assign(alerta, {
+        tipo: "",
+        mensaje: "",
+      });
+    }, 3000);
   }
 };
 </script>
@@ -48,7 +81,8 @@ const validar = () => {
           id="mascota"
           placeholder="Nombre de la mascota"
           class="w-full p-2 mt-2 placeholder-gray-400 border-2 rounded-md"
-          v-model="paciente.nombre"
+          :value="nombre"
+          @input="$emit('update:nombre', $event.target.value)"
         />
       </div>
 
@@ -64,7 +98,8 @@ const validar = () => {
           id="propietario"
           placeholder="Nombre del propietario"
           class="w-full p-2 mt-2 placeholder-gray-400 border-2 rounded-md"
-          v-model="paciente.propietario"
+          :value="propietario"
+          @input="$emit('update:propietario', $event.target.value)"
         />
       </div>
 
@@ -77,7 +112,8 @@ const validar = () => {
           id="email"
           placeholder="Correo electronico"
           class="w-full p-2 mt-2 placeholder-gray-400 border-2 rounded-md"
-          v-model="paciente.email"
+          :value="email"
+          @input="$emit('update:email', $event.target.value)"
         />
       </div>
 
@@ -90,7 +126,8 @@ const validar = () => {
           id="alta"
           placeholder="Alta de la mascota"
           class="w-full p-2 mt-2 placeholder-gray-400 border-2 rounded-md"
-          v-model="paciente.alta"
+          :value="alta"
+          @input="$emit('update:alta', $event.target.value)"
         />
       </div>
 
@@ -102,7 +139,8 @@ const validar = () => {
           id="sintoma"
           placeholder="Mencione los síntomas "
           class="w-full p-2 mt-2 placeholder-gray-400 border-2 rounded-md"
-          v-model="paciente.sintoma"
+          :value="sintoma"
+          @input="$emit('update:sintoma', $event.target.value)"
         />
       </div>
 
