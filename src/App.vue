@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, watch, onMounted } from "vue";
 
 import { uid } from "uid";
 
@@ -38,6 +38,28 @@ const guardarPaciente = () => {
     id: null,
   });
 };
+
+watch(
+  pacientes,
+  () => {
+    guardarLocalStorage();
+  },
+  {
+    deep: true,
+  }
+);
+
+const guardarLocalStorage = () => {
+  localStorage.setItem("pacientes", JSON.stringify(pacientes.value));
+};
+
+onMounted(() => {
+  const pacientesStorage = localStorage.getItem("pacientes");
+  if (pacientesStorage) {
+    pacientes.value = JSON.parse(pacientesStorage);
+  } else {
+  }
+});
 
 const actualizarPaciente = (idPaciente) => {
   const pacienteEditar = pacientes.value.filter((paciente) => {
